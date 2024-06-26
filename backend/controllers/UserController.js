@@ -1,7 +1,7 @@
 const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
-
+const jwt = require("jsonwebtoken");
 //* Registration
 const register = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
@@ -42,40 +42,67 @@ const register = asyncHandler(async (req, res) => {
   });
 });
 //*Login
-const login =asyncHandler( async (req, res) => {
-    const {email,password}= req.body;
-    if (!email || !password) {
-        res.status(400);
-        throw new Error("please all fields are required");
-    }
-    const user= await User.findOne({email});
-    if (!user) {
-        res.status(401);
-        throw new Error('Invalid email or password')
-    }
-    const isMatch= await bcrypt.compare(password,user?.password);
-    if (!isMatch) {
-        res.status(401);
-        throw new Error('Invalid email or password')
-    }
-    //generate token jwt
+const login = asyncHandler(async (req, res) => {
+  const { email, password } = req.body;
+  if (!email || !password) {
+    res.status(400);
+    throw new Error("please all fields are required");
+  }
+  const user = await User.findOne({ email });
+  if (!user) {
+    res.status(401);
+    throw new Error("Invalid email or password");
+  }
+  const isMatch = await bcrypt.compare(password, user?.password);
+  if (!isMatch) {
+    res.status(401);
+    throw new Error("Invalid email or password");
+  }
+  //generate token jwt
+  const token = jwt.sign({ id: user?._id }, process.env.JWT_SECRET, {
+    expiresIn: "3d",
+  });
+  //set the token into cookie
+  res.cookie("token", token, {
+    httpOnly: true,
+    secure: process.env.NODE_ENV === "Production",
+    sameSite: "strict",
+    maxAge: 24 * 60 * 60 * 1000,
+  });
+  //send the response
 
-     //set the token into cookie
-     //send the response
-     res.json({
-        status:'success',
-        message:'Login',
-        username:user?.username,
-        email:user?.email
-     })
+  res.json({
+    status: "success",
+    _id: user?._id,
+    message: "Login",
+    username: user?.username,
+    email: user?.email,
+  });
 });
 //* Logout
-
+const logout = asyncHandler(async (req, res) => {
+  res.cookie("token", "", { maxAge: 1 });
+  res.status(200).json({ message: "Logged out successfully" });
+});
 //* Prfile
-
+const userProfile = asyncHandler(async (req, res) => {
+  const id = "667c38eae1c4a0c8fa35ab22";
+  const user = await User.findById(id).select('-password');
+  if (user) {
+    res.status(200).json({
+      status: "success",
+      user,
+    });
+  } else {
+    res.status(404);
+    throw new Error("user not found");
+  }
+});
 //*Check user auth status
 
 module.exports = {
   register,
   login,
+  logout,
+  userProfile,
 };
