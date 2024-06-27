@@ -18,7 +18,7 @@ app.use(cookieParser())
 //Routes
 
 app.use('/api/v1/users',userRouter)
-app.use('/api/v1/openai',openAIRouter)
+// app.use('/api/v1/openai',openAIRouter)
 
 //Error handler middlewate
 app.use(errorHandler)
