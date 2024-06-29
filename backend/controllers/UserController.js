@@ -2,6 +2,7 @@ const User = require("../models/User");
 const bcrypt = require("bcryptjs");
 const asyncHandler = require("express-async-handler");
 const jwt = require("jsonwebtoken");
+
 //* Registration
 const register = asyncHandler(async (req, res) => {
   const { username, email, password } = req.body;
@@ -87,7 +88,7 @@ const logout = asyncHandler(async (req, res) => {
 //* Prfile
 const userProfile = asyncHandler(async (req, res) => {
     
-  const user = await User.findById(req.user).select('-password');
+  const user = await User.findById(req.user).select('-password').populate('payments');
   if (user) {
     res.status(200).json({
       status: "success",
@@ -100,9 +101,22 @@ const userProfile = asyncHandler(async (req, res) => {
 });
 //*Check user auth status
 
+const checkAuth = asyncHandler(async(req,res)=>{
+  const decoded = jwt.verify(req.cookies.token,process.env.JWT_SECRET);
+  if (decoded) {
+    res.json({
+      isAuthenticated:true,
+    })
+  }else{
+    res.json({
+      isAuthenticated:false,
+    })
+  }
+})
 module.exports = {
   register,
   login,
   logout,
   userProfile,
+  checkAuth
 };

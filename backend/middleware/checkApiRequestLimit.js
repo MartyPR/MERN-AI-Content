@@ -11,7 +11,7 @@ const checkApiRequestLimit = asyncHandler(async (req, res, next) => {
     return res.status(404).json({ message: "user not foud" });
   }
   let requestLimit = 0;
-  if (user?.isTrialActive) {
+  if (user?.trialActive) {
     requestLimit = user?.monthlyRequestCount;
   }
 //   console.log(requestLimit);
