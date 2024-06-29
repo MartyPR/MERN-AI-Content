@@ -60,6 +60,11 @@ const userSchema = new mongoose.Schema(
   }
 );
 
+
+// add virtual property
+userSchema.virtual('isTrialActive').get(function(){
+  return this.trialActive && new Date() < this.trialExpires
+})
 //! Compile to form the model
 const User = mongoose.model("User", userSchema);
 
