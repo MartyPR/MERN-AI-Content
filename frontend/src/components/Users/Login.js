@@ -46,7 +46,7 @@ const Login = () => {
       setTimeout(() => {
         navigate("/dashboard");
       }, 1200);
-      //   navigate("/dashboard");
+        // navigate("/dashboard");
     },
   });
   //update is authenticated
@@ -55,6 +55,8 @@ const Login = () => {
       login();
     }
   }, [mutation.isSuccess]);
+
+
   return (
     <div className="min-h-screen bg-gray-900 flex items-center justify-center">
       <div className="max-w-md w-full bg-white rounded-lg shadow-md p-8 m-4">

@@ -87,8 +87,10 @@ const logout = asyncHandler(async (req, res) => {
 });
 //* Prfile
 const userProfile = asyncHandler(async (req, res) => {
-    
-  const user = await User.findById(req.user).select('-password').populate('payments');
+  const user = await User.findById(req?.user?.id)
+    .select("-password")
+    .populate("payments")
+    .populate("contentHistory");
   if (user) {
     res.status(200).json({
       status: "success",
@@ -96,7 +98,7 @@ const userProfile = asyncHandler(async (req, res) => {
     });
   } else {
     res.status(404);
-    throw new Error("user not found");
+    throw new Error("User not found");
   }
 });
 //*Check user auth status
