@@ -8,6 +8,7 @@ const { errorHandler } = require("./middleware/errorMiddleware");
 const openAIRouter = require("./routes/openAIRouter");
 const stripeRouter = require("./routes/stripeRouter");
 const User = require("./models/User");
+const cors = require('cors')
 const app = express();
 const PORT = process.env.PORT || 8000;
 //1s
@@ -96,7 +97,12 @@ connectDB();
 //MIDDLEWARES
 app.use(express.json());
 app.use(cookieParser());
+const corsOptions={
+  origin:"http://localhost:3000",
+  credentials:true,
+}
 
+app.use(cors(corsOptions)); 
 //Routes
 
 app.use("/api/v1/users", userRouter);
