@@ -9,6 +9,8 @@ import PrivateNavbar from './components/Nav/PrivateNavbar';
 import PublicNavbar from './components/Nav/PublicNavbar';
 import { useAuth } from './components/AuthContext/AuthContext';
 import AuthRoute from './components/AuthRoute/AuthRoute';
+import BlogPostAIAssistant from './components/ContentGeneration/ContentGeneration';
+import Plans from './components/Plan/Plan';
  
 
 function App() {
@@ -24,6 +26,8 @@ const {isAuthenticated} = useAuth()
     <Route path='/register' element={<Registration/>}/>
     <Route path='/login' element={<Login/>}/>
     <Route path='/dashboard' element={<AuthRoute><Dashboard/></AuthRoute>}/>
+    <Route path='/generate-content' element={<AuthRoute><BlogPostAIAssistant/></AuthRoute>}/>
+    <Route path='/plans' element={<Plans/>}/>
   </Routes>
   </BrowserRouter>
   </>
