@@ -25,4 +25,19 @@ export const loginAPI= async({email,password})=>{
   });
   return response.data;
 }
-//profile
+//check auth
+export const checkAuthStatusAPI= async() =>{
+  const response = await axios.get(`${BASE_URL}/users/auth/check`,{
+    withCredentials:true
+  });
+  return response?.data;
+
+}
+// logout
+export const logoutAPI = async()=>{
+  const response = await axios.post(
+    `${BASE_URL}/users/logout`,{},{
+      withCredentials:true, 
+    }
+  )
+}
