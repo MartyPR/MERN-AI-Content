@@ -14,6 +14,9 @@ import Plans from './components/Plan/Plan';
 import FreePlanSignup from './components/StripePayment/FreePlanSignup';
 import CheckoutForm from './components/StripePayment/CheckoutForm';
 import PaymentSuccess from './components/StripePayment/PaymentSuccess';
+import ContentGenerationHistory from './components/ContentGeneration/Contenthistory';
+import AppFeatures from './components/Features/Features';
+import AboutUs from './components/About/About';
  
 
 function App() {
@@ -34,6 +37,9 @@ const {isAuthenticated} = useAuth()
     <Route path='/free-plan' element={<FreePlanSignup/>}/>
     <Route path='/checkout/:plan' element={<CheckoutForm/>}/> 
     <Route path='/success' element={<PaymentSuccess/>}/> 
+    <Route path='/features' element={<AppFeatures/>}/> 
+    <Route path='/about' element={<AboutUs/>}/> 
+    <Route path='/history' element={<AuthRoute><ContentGenerationHistory/></AuthRoute>}/>
   </Routes>
   </BrowserRouter>
   </>
