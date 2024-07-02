@@ -43,85 +43,80 @@ const handlestripPayment = asyncHandler(async (req, res) => {
 //----verify payment-----
 const verifyPayment = asyncHandler(async (req, res) => {
   const { paymentId } = req.params;
-
   try {
     const paymentIntent = await stripe.paymentIntents.retrieve(paymentId);
     console.log(paymentIntent);
-    if (paymentIntent.status !== "succeeded") {
-       //get the info metada
-       const metadata = paymentIntent?.metadata;
-       const subscriptionPlan = metadata?.subscriptionPlan;
-       const userEmail = metadata?.userEmail;
-       const userId = metadata?.userId;
- 
-      //finde the user
+    if (paymentIntent.status === "succeeded") {
+      //get the info metada
+      const metadata = paymentIntent?.metadata;
+      const subscriptionPlan = metadata?.subscriptionPlan;
+      const userEmail = metadata?.userEmail;
+      const userId = metadata?.userId;
+
+      //find the user
       const userFound = await User.findById(userId);
       if (!userFound) {
         return res.status(404).json({
           status: "false",
           message: "User not found",
         });
-    }
-        //get the payment details
-        const amount = paymentIntent?.amount / 100;
-        const currency = paymentIntent?.currency;
-        const paymentId = paymentIntent?.id;
+      }
+      //Get the payment details
+      const amount = paymentIntent?.amount / 100;
+      const currency = paymentIntent?.currency;
+      const paymentId = paymentIntent?.id;
 
-        //create the payment hisotry
-       const newPayment = await Payment.create({
-          user: userId,
-          email: userEmail,
+      //create the payment history
+      const newPayment = await Payment.create({
+        user: userId,
+        email: userEmail,
+        subscriptionPlan,
+        amount,
+        currency,
+        status: "success",
+        reference: paymentId,
+      });
+      //Check for the subscription plan
+
+      if (subscriptionPlan === "Basic") {
+        //update the user
+        const updatedUser = await User.findByIdAndUpdate(userId, {
           subscriptionPlan,
-          amount,
-          currency,
-          status:'success',
-          reference:paymentId
+          trialPeriod: 0,
+          nextBillingDate: calculateNextBillingDate(),
+          apiRequestCount: 0,
+          monthlyRequestCount: 50,
+          subscriptionPlan: "Basic",
+          $addToSet: { payments: newPayment?._id },
         });
 
-        //check for the subcription plan
-        if (subscriptionPlan==='Basic') {
-            //update the user
-            const updateUser= await User.findByIdAndUpdate(userId,{
-                subscriptionPlan,
-                trialPeriod:0,
-                nextBillingDate:calculateNextBillingDate(),
-                apiRequestCount:0,
-                monthlyRequestCount:50,
-                subscriptionPlan:'Basic',
-                $addToSet:{payments:newPayment?._id}
+        res.json({
+          status: true,
+          message: "Payment verified, user updated",
+          updatedUser,
+        });
+      }
+      if (subscriptionPlan === "Premium") {
+        //update the user
+        const updatedUser = await User.findByIdAndUpdate(userId, {
+          subscriptionPlan,
+          trialPeriod: 0,
+          nextBillingDate: calculateNextBillingDate(),
+          apiRequestCount: 0,
+          monthlyRequestCount: 100,
+          subscriptionPlan: "Premium",
+          $addToSet: { payments: newPayment?._id },
+        });
 
-            })
-
-            res.json({
-                status:'true',
-                message:"Payment verified user updated",
-                updateUser,
-            })
-        }
-        if (subscriptionPlan==='Premium') {
-            //update the user
-            const updateUser= await User.findByIdAndUpdate(userId,{
-                subscriptionPlan,
-                trialPeriod:0,
-                nextBillingDate:calculateNextBillingDate(),
-                apiRequestCount:0,
-                monthlyRequestCount:100,
-                subscriptionPlan:'Premium',
-                $addToSet:{payments:newPayment?._id}
-
-            })
-
-            res.json({
-                status:'true',
-                message:"Payment verified user updated",
-                updateUser,
-            })
-        }
-    
-     
+        res.json({
+          status: true,
+          message: "Payment verified, user updated",
+          updatedUser,
+        });
+      }
     }
   } catch (error) {
-    console.error(error);
+    console.log(error);
     res.status(500).json({ error });
   }
 });

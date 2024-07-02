@@ -13,6 +13,7 @@ import BlogPostAIAssistant from './components/ContentGeneration/ContentGeneratio
 import Plans from './components/Plan/Plan';
 import FreePlanSignup from './components/StripePayment/FreePlanSignup';
 import CheckoutForm from './components/StripePayment/CheckoutForm';
+import PaymentSuccess from './components/StripePayment/PaymentSuccess';
  
 
 function App() {
@@ -32,6 +33,7 @@ const {isAuthenticated} = useAuth()
     <Route path='/plans' element={<Plans/>}/>
     <Route path='/free-plan' element={<FreePlanSignup/>}/>
     <Route path='/checkout/:plan' element={<CheckoutForm/>}/> 
+    <Route path='/success' element={<PaymentSuccess/>}/> 
   </Routes>
   </BrowserRouter>
   </>
