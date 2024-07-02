@@ -11,7 +11,7 @@ const BlogPostAIAssistant = () => {
   const [generatedContent, setGeneratedContent] = useState("");
 // generate content API
   const mutation = useMutation({ mutationFn: generateContentAPI });
-
+ 
   //data about user
   const { isLoading, isError, data, error } = useQuery({
     queryFn: getUserProfileAPI,
@@ -32,16 +32,17 @@ const BlogPostAIAssistant = () => {
     }),
     onSubmit: (values) => {
       // Simulate content generation based on form values
-      console.log(values);
+    //   console.log(values);
       mutation.mutate(`Generate a blog post based ${values.prompt},${values.category}, ${values.tone}`)
       setGeneratedContent(`Generated content for prompt: ${mutation?.data}`);
+      console.log(mutation);
     },
   });
   if (isLoading) {
     return <StatusMessage type="loading" message="Loading please wait ...." />;
   } else if (error) {
     return (
-      <StatusMessage type="error" message={error?.response?.data?.message} />
+      <StatusMessage type="error" message={error?.response?.data?.error} />
     );
   }
 
