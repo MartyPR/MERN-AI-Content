@@ -63,7 +63,7 @@ export default function Plans() {
             navigate('/free-plan')
             
         }else{
-
+            navigate(`/checkout/${plan?.id}?amount=${plan?.amount}`);
         }
     }
   return (

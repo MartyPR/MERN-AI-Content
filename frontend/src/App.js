@@ -12,6 +12,7 @@ import AuthRoute from './components/AuthRoute/AuthRoute';
 import BlogPostAIAssistant from './components/ContentGeneration/ContentGeneration';
 import Plans from './components/Plan/Plan';
 import FreePlanSignup from './components/StripePayment/FreePlanSignup';
+import CheckoutForm from './components/StripePayment/CheckoutForm';
  
 
 function App() {
@@ -30,6 +31,7 @@ const {isAuthenticated} = useAuth()
     <Route path='/generate-content' element={<AuthRoute><BlogPostAIAssistant/></AuthRoute>}/>
     <Route path='/plans' element={<Plans/>}/>
     <Route path='/free-plan' element={<FreePlanSignup/>}/>
+    <Route path='/checkout/:plan' element={<CheckoutForm/>}/> 
   </Routes>
   </BrowserRouter>
   </>

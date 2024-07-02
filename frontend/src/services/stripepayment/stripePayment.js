@@ -11,3 +11,18 @@ export const handleFreeSubscriptionAPI = async () => {
     );
     return response?.data;
   };
+
+  export const createStripePaymentIntent = async (payment) => {
+    console.log(payment);
+    const response = await axios.post(
+      "http://localhost:8000/api/v1/stripe/checkout",
+      {
+        amount:Number(payment?.amount),
+        subscriptionPlan:payment?.plan,
+      },
+      {
+        withCredentials: true,
+      }
+    );
+    return response?.data;
+  };

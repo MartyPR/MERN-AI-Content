@@ -4,10 +4,18 @@ import "./index.css";
 import App from "./App";
 import reportWebVitals from "./reportWebVitals";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools'
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { AuthProvider } from "./components/AuthContext/AuthContext";
 
-
+import { loadStripe } from "@stripe/stripe-js";
+import {Elements} from "@stripe/react-stripe-js"
+//stripe confi
+const stripePromise=loadStripe('pk_test_51PWkZzRxhjnT4bkRjgfgWP8qbElFrbANhhoWUDGRiFOAQoXsFWb0P5Yjk57ZYlNsF8VCeLbJXIXn2G6exIwhWQrD00eUTCnR3s')
+const option ={
+  mode:'payment',
+  currency:'usd',
+  amount:1099,
+}
 const root = ReactDOM.createRoot(document.getElementById("root"));
 
 const queryClient = new QueryClient();
@@ -15,9 +23,12 @@ root.render(
   <React.StrictMode>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-              <App />
+        <Elements stripe={stripePromise} options={option}>
+        <App />
+        </Elements>
+       
       </AuthProvider>
-      <ReactQueryDevtools initialIsOpen={false}/>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   </React.StrictMode>
 );

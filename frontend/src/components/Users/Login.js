@@ -45,11 +45,12 @@ const Login = () => {
       // Simulate login success and navigate to dashboard
       setTimeout(() => {
         navigate("/dashboard");
-      }, 1200);
+      }, 3000);
         // navigate("/dashboard");
     },
   });
   //update is authenticated
+  
   useEffect(() => {
     if (mutation.isSuccess) {
       login();
